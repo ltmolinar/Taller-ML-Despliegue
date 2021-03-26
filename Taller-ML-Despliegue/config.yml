@@ -2,7 +2,7 @@ hyperparams:
 #  age-extractor: {}
 #  simplified-transformer: {}
   regressor:
-    n_estimators: 150
+    n_estimators: 200
     max_depth: null
 
 data:
