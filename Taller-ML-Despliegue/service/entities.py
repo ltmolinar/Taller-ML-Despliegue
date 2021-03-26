@@ -1,17 +1,34 @@
 import typing as t
 import typing_extensions as te
 
-from pydantic import BaseModel, Field, ConstrainedInt, PositiveInt, PositiveFloat
+from pydantic import BaseModel, Field, ConstrainedInt, PositiveInt, PositiveFloat, ConstrainedFloat
 
 
-# class ModelInput(BaseModel):
-#     YrSold: int
-#     YearBuilt: int
-#     YearRemodAdd: int
-#     GarageYrBlt: int
-#     LotArea: int
-#     Neighborhood: str
-#     HouseStyle: str
+mnthLiteral = te.Literal["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
+hrLiteral = te.Literal["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", 
+"13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"]
+seasonLiteral = te.Literal["1", "2", "3", "4"]
+generalLiteral = te.Literal["0", "1"]
+weekdayLiteral = te.Literal["0", "1", "2", "3", "4", "5", "6"]
+weathersitLiteral = te.Literal["1", "2", "3", "4"]
+
+class generalInteger(ConstrainedFloat):
+    ge: 0.1
+    le: 1
+
+class ModelInput(BaseModel):
+    yr: generalLiteral
+    mnth: mnthLiteral
+    hr: hrLiteral
+    season: seasonLiteral
+    holiday: generalLiteral
+    weekday: weekdayLiteral
+    workingday: generalLiteral
+    weathersit: weathersitLiteral
+    temp: generalInteger
+    atemp: generalInteger
+    hum: generalInteger
+    windspeed: generalInteger
 
 
 #NeighborhoodLiteral = te.Literal[
