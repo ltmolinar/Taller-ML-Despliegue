@@ -1,8 +1,17 @@
 from sklearn.metrics import mean_absolute_error, make_scorer
+import numpy as np
+
+def bike_number_error(y_true, y_pred, understock_price=0.6, overstock_price=0.4):
+    error=np.zeros(y_true.shape[0])
+    error = y_true - y_pred
+    error [error >=0] =error*understock_price
+    error [error <0] =error*overstock_price*(-1)
+    score = error.mean()
+    return score
 
 
 def get_metric_name_mapping():
-    return {_mae(): mean_absolute_error}
+    return {metric(): bike_number_error}
 
 
 def get_metric_function(name: str, **params):
@@ -16,10 +25,11 @@ def get_metric_function(name: str, **params):
 
 def get_scoring_function(name: str, **params):
     mapping = {
-        _mae(): make_scorer(mean_absolute_error, greater_is_better=False, **params)
+        metric(): make_scorer(bike_number_error, **params)
     }
     return mapping[name]
 
 
-def _mae():
-    return "mean absolute error"
+def metric():
+    return "bike_number_error"
+

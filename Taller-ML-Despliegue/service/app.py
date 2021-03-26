@@ -30,43 +30,43 @@ def load_estimator():
     return estimator
 
 
-# @app.post("/")
-# async def make_prediction(input_: str = Body(...), estimator=Depends(load_estimator)):
-#     """
-#     Call this using something like
+@app.post("/")
+async def make_prediction(input_: str = Body(...), estimator=Depends(load_estimator)):
+    """
+    Call this using something like
 
-#     YrSold=2010,YearBuilt=1970,YearRemodAdd=1999,GarageYrBlt=1980,LotArea=24,Neighborhood=Blmngtn,HouseStyle=SFoyer
-#     """
-#     input_dict = {}
-#     for var in input_.split(","):
-#         name, value = var.split("=")
-#         if value.isnumeric():
+    YrSold=2010,YearBuilt=1970,YearRemodAdd=1999,GarageYrBlt=1980,LotArea=24,Neighborhood=Blmngtn,HouseStyle=SFoyer
+    """
+    input_dict = {}
+    for var in input_.split(","):
+        name, value = var.split("=")
+        if value.isnumeric():
 
-#             value = int(value)
-#         input_dict[name] = [value]
-#     X = pd.DataFrame(input_dict)
-#     prediction = estimator.predict(X).tolist()
-#     return prediction
-
-
-# @app.post("/")
-# async def make_prediction(
-#     inputs: t.List[ModelInput] = Body(...),
-#     estimator=Depends(load_estimator),
-# ):
-#     X = pd.DataFrame([row.dict() for row in inputs])
-#     prediction = estimator.predict(X).tolist()
-#     return prediction
+            value = int(value)
+        input_dict[name] = [value]
+    X = pd.DataFrame(input_dict)
+    prediction = estimator.predict(X).tolist()
+    return prediction
 
 
-# @app.post("/", response_model=t.List[float])
-# async def make_prediction(
-#     inputs: t.List[ModelInput] = Body(...),
-#     estimator=Depends(load_estimator),
-# ):
-#     X = pd.DataFrame([row.dict() for row in inputs])
-#     prediction = estimator.predict(X).tolist()
-#     return prediction
+@app.post("/")
+async def make_prediction(
+    inputs: t.List[ModelInput] = Body(...),
+    estimator=Depends(load_estimator),
+):
+    X = pd.DataFrame([row.dict() for row in inputs])
+    prediction = estimator.predict(X).tolist()
+    return prediction
+
+
+@app.post("/", response_model=t.List[float])
+async def make_prediction(
+    inputs: t.List[ModelInput] = Body(...),
+    estimator=Depends(load_estimator),
+):
+    X = pd.DataFrame([row.dict() for row in inputs])
+    prediction = estimator.predict(X).tolist()
+    return prediction
 
 
 class Logger:

@@ -41,6 +41,7 @@ def train(config_file: str):
     estimator.fit(X, y)
     output_dir = _load_config(config_file, "export")["output_dir"]
     version = _save_versioned_estimator(estimator, hyperparams, output_dir)
+    
     return version
 
 
@@ -54,14 +55,18 @@ def _save_versioned_estimator(
     estimator: BaseEstimator, hyperparams: t.Dict[str, t.Any], output_dir: str
 ):
     version = str(datetime.now(timezone.utc).replace(second=0, microsecond=0))
+    version = version.replace(':',' ')
     model_dir = os.path.join(output_dir, version)
+    
     os.makedirs(model_dir, exist_ok=True)
     try:
+        
         joblib.dump(estimator, os.path.join(model_dir, "model.joblib"))
         _save_yaml(hyperparams, os.path.join(model_dir, "params.yml"))
     except Exception as e:
         typer.echo(f"Coudln't serialize model due to error {e}")
         shutil.rmtree(model_dir)
+    
     return version
 
 
@@ -88,6 +93,7 @@ def find_hyperparams(
     X, y = _get_dataset(_load_config(config_file, "data"), splits=[split])[split]
     gs.fit(X, y)
     hyperparams = _param_grid_to_custom_format(gs.best_params_)
+    typer.echo(f"BEST HYPERPARAMS: {hyperparams}")
     estimator = model.build_estimator(hyperparams)
     output_dir = _load_config(config_file, "export")["output_dir"]
     _save_versioned_estimator(estimator, hyperparams, output_dir)
@@ -146,7 +152,7 @@ def _load_config(filepath: str, key: str):
 @lru_cache(None)
 def _load_yaml(filepath: str) -> t.Dict[str, t.Any]:
     with open(filepath, "r") as f:
-        content = yaml.load(f)
+        content = yaml.load(f, Loader=yaml.FullLoader)
     return content
 
 
